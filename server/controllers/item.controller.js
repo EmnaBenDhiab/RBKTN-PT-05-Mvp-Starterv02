@@ -1,40 +1,45 @@
-// DELETE THIS LINE
-const selectAll = () => {};
+const Item = require('../database-mongo/Item.model.js');
 
-// UNCOMMENT THE DATABASE YOU'D LIKE TO USE
-// const db = require("../database-mysql");
-// const Item = require('../database-mongo/Item.model.js');
+const selectAll = function (req, res) {
+    Item.find({})
+        .then((items) => {
+            res.status(200).send(items);
+        })
+        .catch((error) => {
+            res.status(500).send(error);
+        });
+};
 
-// UNCOMMENT IF USING MYSQL WITH CALLBACKS
-// const selectAll = function (req, res) {
-//   db.query("SELECT * FROM items", (err, items, fields) => {
-//     if (err) {
-//       res.status(500).send(err);
-//     } else {
-//       res.status(200).send(items);
-//     }
-//   });
-// };
+const addItems = function (req, res) {
+  console.log(req.body);
+    Item.insertMany(req.body)
+        .then((items) => {
+            res.status(200).send(items);
+        })
+        .catch((error) => {
+            res.status(500).send(error);
+        });
+};
 
-// UNCOMMENT IF USING MONGOOSE WITH PROMISES
-// const selectAll = function (req, res) {
-//   Item.find({})
-//     .then((items) => {
-//       res.status(200).send(items);
-//     })
-//     .catch((error) => {
-//       res.status(500).send(error);
-//     });
-// };
 
-// UNCOMMENT IF USING MONGOOSE WITH PROMISES & ASYNC AWAIT
-// const selectAll = async function (req, res) {
-//   try {
-//     const items = await Item.find({});
-//     res.status(200).send(items);
-//   } catch (error) {
-//     res.status(200).send(error);
-//   }
-// };
+const updateItem = function (req, res) {
+    Item.updateOne({ _id: req.body.id }, { $set: req.body })
+        .then((items) => {
+            res.status(200).send(items);
+        })
+        .catch((error) => {
+            res.status(500).send(error);
+        });
+};
 
-module.exports = { selectAll };
+const deleteItem = function (req, res) {
+    Item.deleteOne({ _id: req.params.id })
+        .then((items) => {
+            res.status(200).send(items);
+        })
+        .catch((error) => {
+            res.status(500).send(error);
+        });
+};
+
+module.exports = { selectAll, addItems, updateItem, deleteItem };
